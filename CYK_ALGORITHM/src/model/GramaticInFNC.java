@@ -18,11 +18,18 @@ public class GramaticInFNC {
 	 * Variables of the gramatic and their productions
 	 */
 	private HashMap<Character, Variable> variables;
+	
+	/**
+	 * Terminals that belongs to the gramatic.
+	 */
+	private HashSet<Character> terminals;
+	
 	/**
 	 * Constructor
 	 */
 	public GramaticInFNC() {
 		variables= new HashMap<Character, Variable>();
+		terminals = new HashSet<Character>();
 	}
 	/**
 	 * Checks if the current gramatic is in FNC
@@ -171,20 +178,43 @@ public class GramaticInFNC {
 		}
 		return true;
 	}
+	
+	/**
+	 * Adds a new variable that belongs to the gramatic
+	 * @param v
+	 */
 	public void addVariable(Character v) {
 		variables.put(v, new Variable(v));
 	}
 	
+	/**
+	 * Adds a production to a specified variable. The production gives as result two variables.
+	 * (In the form A --> BC)
+	 * @param from The variable that will have the new production
+	 * @param to1 The first variable of the result of the production. It is a variable that belongs to the gramatic
+	 * @param to2 The second variable of the result of the production. It is a variable that belongs to the gramatic
+	 */
 	public void addProduction(char from, char to1, char to2) {
 		Variable var = variables.get(from);
 		var.addProduction(to1, to2);
 	}
 	
+	/**
+	 * Adds a production to a specified variable. The production gives as result one terminal.
+	 * (In the form A --> a)
+	 * @param from The variable that will have the new production. 
+	 * @param terminal The result of the production. It is a terminal that belongs to the gramatic.
+	 */
 	public void addProduction(char from, char terminal) {
 		Variable var = variables.get(from);
 		var.addProduction(terminal);
 	}
 	
+	/**
+	 * The CYK Algorithm. It verifies if a given string p belongs or not to the current gramatic.
+	 * @param p The string that we want to verify if belongs to the gramatic.
+	 * @return true if the string belongs to the gramatic, false if not.
+	 */
 	public boolean CYK(String p) {
 		char [] characters = p.toCharArray();
 		HashSet<Variable> [][] memo = (HashSet<Variable>[][]) new HashSet [p.length()][p.length()];
@@ -199,6 +229,12 @@ public class GramaticInFNC {
 		return producesString;
 	}
 	
+	/**
+	 * Fills the first column of the memo. That is, for each row, it adds al the variables that produces
+	 * the ith terminal of the String.
+	 * @param memo The matrix where the CYK algortithm is being completed.
+	 * @param characters An array corresponding to the chars of the string p we want to verify if belongs to the gramatic.
+	 */
 	private void initialIterationCYK(HashSet<Variable>[][] memo, char [] characters) {
 		int j = 0;
 		for (int i = 0; i < characters.length; i++) {
@@ -215,6 +251,14 @@ public class GramaticInFNC {
 		}
 	}
 	
+	/**
+	 * The iterable part of the CYK algorithm. For every column (Except the first), it adds the variables,
+	 * for every row i where 0 <= i < n-j, that satisfies the fact that: A is added if the production A -> BC exists and 
+	 * B belongs to X(i,k) and C belongs to X(i+k,j-k) for every 0 <= k < j-1
+	 * @param memo The matrix where the CYK algortithm is being completed.
+	 * @param characters An array corresponding to the chars of the string p we want to verify if belongs to the gramatic.
+	 * @param j The length of the string we want to check if its produced (The iteration).
+	 */
 	private void repeatableIterationsCYK(HashSet<Variable>[][] memo, char [] characters, int j) {
 		for (int i = 0; i < characters.length -j; i++) {
 			memo [i][j] = new HashSet<Variable>();
