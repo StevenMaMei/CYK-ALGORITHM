@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.omg.CosNaming.IstringHelper;
+
 /**
  * Represents a gramatic in normal form of Chomsky
  * @author Steven
@@ -170,12 +171,66 @@ public class GramaticInFNC {
 		}
 		return true;
 	}
-	public void addVariable(Character v, ArrayList<String> productions) {
-		//TODO
+	public void addVariable(Character v) {
+		variables.put(v, new Variable(v));
 	}
+	
+	public void addProduction(char from, char to1, char to2) {
+		Variable var = variables.get(from);
+		var.addProduction(to1, to2);
+	}
+	
+	public void addProduction(char from, char terminal) {
+		Variable var = variables.get(from);
+		var.addProduction(terminal);
+	}
+	
 	public boolean CYK(String p) {
-		//TOODO
-		return false;
+		char [] characters = p.toCharArray();
+		HashSet<Variable> [][] memo = (HashSet<Variable>[][]) new HashSet [p.length()][p.length()];
+		initialIterationCYK(memo, characters);
+		for (int j = 1; j < characters.length; j++) {
+			repeatableIterationsCYK(memo, characters, j);
+		}
+		boolean producesString = false;
+		for (Variable v : memo[p.length()-1][p.length()-1]) {
+			producesString = producesString || v.isTheInitial();
+		}
+		return producesString;
+	}
+	
+	private void initialIterationCYK(HashSet<Variable>[][] memo, char [] characters) {
+		int j = 0;
+		for (int i = 0; i < characters.length; i++) {
+			memo [i][j] = new HashSet<Variable>();
+			char actChar = characters[i];
+			for (Variable v : variables.values()) {
+				boolean contains = false;
+				for (ProductionOfGramaticInFNC prod : v.getProductions()) {
+					contains = prod.getVariable1() == actChar;
+				}
+				if (contains)
+					memo[i][j].add(v);
+			}
+		}
+	}
+	
+	private void repeatableIterationsCYK(HashSet<Variable>[][] memo, char [] characters, int j) {
+		for (int i = 0; i < characters.length -j; i++) {
+			memo [i][j] = new HashSet<Variable>();
+			for (int k = 0; k < j - 1; k++) {
+				for (Variable v: variables.values()) {
+					boolean contains = false;
+					for (ProductionOfGramaticInFNC prod : v.getProductions()) {
+						contains = prod.getVariable2() != null && memo[i][k].contains(variables.get(prod.getVariable1()))
+								&& memo[i+k][j-k].contains(variables.get(prod.getVariable2()));
+					}
+					if (contains) {
+						memo [i][j].add(v);
+					}
+				}
+			}
+		}
 	}
 	
 	

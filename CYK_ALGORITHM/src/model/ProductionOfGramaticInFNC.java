@@ -1,4 +1,5 @@
 package model;
+
 /**
  * Class that represents a production of a variable within a Gramatic
  * @author Steven

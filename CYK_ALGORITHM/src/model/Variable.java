@@ -2,6 +2,7 @@ package model;
 
 
 import java.util.ArrayList;
+
 /**
  * Represents a variable of a gramatic
  * @author Steven
