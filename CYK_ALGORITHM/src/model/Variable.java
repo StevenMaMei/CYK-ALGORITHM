@@ -14,10 +14,19 @@ public class Variable {
 	 */
 	private ArrayList<ProductionOfGramaticInFNC> productions;
 	/**
+	 * is the initial variable?
+	 */
+	private boolean isTheInitial;
+	/**
+	 * id of the variable
+	 */
+	private Character id;
+	/**
 	 * Constructs a variable
 	 */
-	public Variable() {
+	public Variable(Character i) {
 		productions= new ArrayList<ProductionOfGramaticInFNC>();
+		id=i;
 	}
 	/**
 	 * Adds a production that has one variable
@@ -50,6 +59,27 @@ public class Variable {
 		}
 		return ans;
 	}
+	public ArrayList<ProductionOfGramaticInFNC> getProductions() {
+		return productions;
+	}
+	public void setProductions(ArrayList<ProductionOfGramaticInFNC> productions) {
+		this.productions = productions;
+	}
+	public boolean isTheInitial() {
+		return isTheInitial;
+	}
+	public void setTheInitial(boolean isTheInitial) {
+		this.isTheInitial = isTheInitial;
+	}
+	public Character getId() {
+		return id;
+	}
+	public void setId(Character id) {
+		this.id = id;
+	}
+	
+	
+	
 	
 	
 }
