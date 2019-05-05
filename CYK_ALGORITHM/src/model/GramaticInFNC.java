@@ -24,6 +24,8 @@ public class GramaticInFNC {
 	 */
 	private HashSet<Character> terminals;
 	
+	private Variable firstVariable;
+	
 	/**
 	 * Constructor
 	 */
@@ -43,7 +45,7 @@ public class GramaticInFNC {
 		if(!thereAreNotLambdaExcepInTheInitial()) {
 			return false;
 		}
-		if(!allVariblesCanBeReached()) {
+		if(!allVariablesCanBeReached()) {
 			return false;
 		}
 		if(!allVariablesAreTerminal()) {
@@ -110,7 +112,7 @@ public class GramaticInFNC {
 	 * Checks if all variables can be reached
 	 * @return true if all variables can be reached
 	 */
-	public boolean allVariblesCanBeReached() {
+	public boolean allVariablesCanBeReached() {
 		ArrayList<Variable> reached= new ArrayList<Variable>();
 		HashSet<Character> alreadyReached= new HashSet<Character>();
 		HashSet<Character> alreadyChecked= new HashSet<Character>();
@@ -183,8 +185,18 @@ public class GramaticInFNC {
 	 * Adds a new variable that belongs to the gramatic
 	 * @param v
 	 */
-	public void addVariable(Character v) {
-		variables.put(v, new Variable(v));
+	public void addVariable(Character v, boolean init) {
+		Variable var = new Variable(v, init);
+		variables.put(v, var);
+		if (init) firstVariable = var;
+	}
+	
+	/**
+	 * Adds a new terminal that belongs to the gramatic
+	 * @param term
+	 */
+	public void addTerminal(Character term) {
+		terminals.add(term);
 	}
 	
 	/**
@@ -223,7 +235,7 @@ public class GramaticInFNC {
 			repeatableIterationsCYK(memo, characters, j);
 		}
 		boolean producesString = false;
-		for (Variable v : memo[p.length()-1][p.length()-1]) {
+		for (Variable v : memo[0][p.length()-1]) {
 			producesString = producesString || v.isTheInitial();
 		}
 		return producesString;
@@ -262,6 +274,7 @@ public class GramaticInFNC {
 	private void repeatableIterationsCYK(HashSet<Variable>[][] memo, char [] characters, int j) {
 		for (int i = 0; i < characters.length -j; i++) {
 			memo [i][j] = new HashSet<Variable>();
+			System.out.println(i + " " + j);
 			for (int k = 0; k < j - 1; k++) {
 				for (Variable v: variables.values()) {
 					boolean contains = false;
@@ -275,6 +288,16 @@ public class GramaticInFNC {
 				}
 			}
 		}
+	}
+	
+	public Variable getFirstVariable() {
+		return firstVariable;
+	}
+	public HashMap<Character, Variable> getVariables() {
+		return variables;
+	}
+	public HashSet<Character> getTerminals() {
+		return terminals;
 	}
 	
 	

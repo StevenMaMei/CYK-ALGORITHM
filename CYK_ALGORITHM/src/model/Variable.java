@@ -25,9 +25,10 @@ public class Variable {
 	/**
 	 * Constructs a variable
 	 */
-	public Variable(Character i) {
+	public Variable(Character i, boolean initial) {
 		productions= new ArrayList<ProductionOfGramaticInFNC>();
 		id=i;
+		isTheInitial = initial;
 	}
 	/**
 	 * Adds a production that has one variable
