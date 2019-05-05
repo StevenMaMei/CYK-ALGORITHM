@@ -255,7 +255,7 @@ public class GramaticInFNC {
 			for (Variable v : variables.values()) {
 				boolean contains = false;
 				for (ProductionOfGramaticInFNC prod : v.getProductions()) {
-					contains = prod.getVariable1() == actChar;
+					contains = contains || prod.getVariable1() == actChar;
 				}
 				if (contains)
 					memo[i][j].add(v);
@@ -275,12 +275,12 @@ public class GramaticInFNC {
 		for (int i = 0; i < characters.length -j; i++) {
 			memo [i][j] = new HashSet<Variable>();
 			System.out.println(i + " " + j);
-			for (int k = 0; k < j - 1; k++) {
+			for (int k = 0; k < j; k++) {
 				for (Variable v: variables.values()) {
 					boolean contains = false;
 					for (ProductionOfGramaticInFNC prod : v.getProductions()) {
-						contains = prod.getVariable2() != null && memo[i][k].contains(variables.get(prod.getVariable1()))
-								&& memo[i+k][j-k].contains(variables.get(prod.getVariable2()));
+						contains = contains ||( prod.getVariable2() != null && memo[i][k].contains(variables.get(prod.getVariable1()))
+								&& memo[i+k+1][j-k-1].contains(variables.get(prod.getVariable2())));
 					}
 					if (contains) {
 						memo [i][j].add(v);
