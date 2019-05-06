@@ -79,6 +79,7 @@ public class ControllerGramatic implements Initializable{
 		cbSecondResultVariable.setItems(obs);
 		
 		ObservableList<Character> terminals = FXCollections.observableArrayList();
+		terminals.add(' ');
 		for (Character term : gramatic.getTerminals()) {
 			terminals.add(term);
 		}
