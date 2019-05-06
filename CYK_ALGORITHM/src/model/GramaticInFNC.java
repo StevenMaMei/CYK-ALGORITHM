@@ -228,7 +228,9 @@ public class GramaticInFNC {
 	 * @return true if the string belongs to the gramatic, false if not.
 	 */
 	public boolean CYK(String p) {
-		if (p == "") p = " ";
+		if (p.equals("")) {
+			return firstVariable.isThereThisProduction(" ");
+		}
 		char [] characters = p.toCharArray();
 		HashSet<Variable> [][] memo = (HashSet<Variable>[][]) new HashSet [p.length()][p.length()];
 		initialIterationCYK(memo, characters);
